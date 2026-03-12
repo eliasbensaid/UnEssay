@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Making Monsters — UCLA 2024</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0e0e0e;
+      --paper: #f5f0e8;
+      --red: #c0392b;
+      --muted: #7a7265;
+      --rule: #d4cec4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+    }
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 60px;
+    }
+
+    .hero-left {
+      padding: 6rem 4rem 4rem 5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--rule);
+    }
+
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 2rem;
+    }
+
+    .hero-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 6vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      color: var(--red);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: #3a3530;
+      max-width: 480px;
+      margin-bottom: 3rem;
+    }
+
+    .date-block {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      border-left: 2px solid var(--red);
+      padding-left: 1rem;
+      line-height: 1.8;
+    }
+
+    .hero-right {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      position: relative;
+    }
+
+    .hero-img-top {
+      background: #1a1a1a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-img-bottom {
+      background: #2c2c2c;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid #444;
+    }
+
+    .img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .img-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .img-caption {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 0 2rem;
+    }
+
+    /* DIVIDER / PULL QUOTE */
+    .pull-section {
+      padding: 5rem 5rem;
+      border-top: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .pull-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .pull-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+      font-style: italic;
+      line-height: 1.45;
+      color: var(--ink);
+    }
+
+    .pull-quote span {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0 0.15em;
+    }
+
+    /* THREE PAGES GRID */
+    .pages-section {
+      padding: 4rem 5rem 6rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .pages-header {
+      display: flex;
+      align-items: baseline;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .pages-header h2 {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .pages-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+
+    .page-card {
+      padding: 2.5rem 2.5rem;
+      border-right: 1px solid var(--rule);
+      text-decoration: none;
+      color: var(--ink);
+      display: block;
+      transition: background 0.25s;
+      position: relative;
+    }
+    .page-card:last-child { border-right: none; }
+    .page-card:hover { background: rgba(0,0,0,0.03); }
+
+    .card-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--red);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: #4a4540;
+    }
+
+    .card-arrow {
+      margin-top: 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 2rem 5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ANIMATIONS */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.8s ease forwards;
+    }
+    .fade-up:nth-child(1) { animation-delay: 0.1s; }
+    .fade-up:nth-child(2) { animation-delay: 0.25s; }
+    .fade-up:nth-child(3) { animation-delay: 0.4s; }
+    .fade-up:nth-child(4) { animation-delay: 0.55s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.5rem; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-left { padding: 5rem 2rem 3rem; }
+      .hero-right { height: 50vh; grid-template-rows: 1fr 1fr; }
+      .pull-section { grid-template-columns: 1fr; gap: 1.5rem; padding: 3rem 2rem; }
+      .pages-section { padding: 3rem 2rem; }
+      .pages-grid { grid-template-columns: 1fr; }
+      .page-card { border-right: none; border-bottom: 1px solid var(--rule); }
+      footer { flex-direction: column; gap: 0.5rem; padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Making Monsters — UCLA 2024</a>
+  <ul class="nav-links">
+    <li><a href="narrative.html">The Narrative</a></li>
+    <li><a href="machine.html">The Machine</a></li>
+    <li><a href="people.html">The People</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <p class="eyebrow fade-up">An UnEssay — Humanities / Making Monsters</p>
+    <h1 class="hero-headline fade-up">
+      A Story<br>About <em>Language</em>
+    </h1>
+    <p class="hero-sub fade-up">
+      On April 25, 2024, students set up tents on Royce Quad at UCLA. Eight days later, riot police arrested over 200 of them. This site is about what happened in between — not physically, but linguistically. It is about the words that made one image seem to require the other.
+    </p>
+    <div class="date-block fade-up">
+      <div>April 25, 2024 — Encampment established, Royce Quad</div>
+      <div>May 1, 2024 — Counterprotest attack. Police stand by.</div>
+      <div>May 2, 2024 — Riot police clear encampment. 200+ arrested.</div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-img-top">
+      <div class="img-placeholder">
+        <span class="img-label">April 25, 2024</span>
+        <p class="img-caption">Students establish Gaza solidarity encampment on Royce Quad</p>
+      </div>
+    </div>
+    <div class="hero-img-bottom">
+      <div class="img-placeholder">
+        <span class="img-label">May 2, 2024</span>
+        <p class="img-caption">Riot police move in. 200+ students arrested.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pull-section">
+  <p class="pull-label">The Central Question</p>
+  <blockquote class="pull-quote">
+    What <span>words</span> traveled between those two images — and what did they make possible?
+  </blockquote>
+</section>
+
+<section class="pages-section">
+  <div class="pages-header">
+    <h2>Three Parts</h2>
+  </div>
+  <div class="pages-grid">
+    <a href="narrative.html" class="page-card">
+      <span class="card-num">01 / 03</span>
+      <h3 class="card-title">The Narrative</h3>
+      <p class="card-desc">A timeline of the specific language used by politicians, media, and institutions to describe UCLA protesters — from the first day of the encampment to the night of the arrests.</p>
+      <p class="card-arrow">Read →</p>
+    </a>
+    <a href="machine.html" class="page-card">
+      <span class="card-num">02 / 03</span>
+      <h3 class="card-title">The Machine</h3>
+      <p class="card-desc">How dehumanization works — and how it worked here. Applying David Livingstone Smith's framework from <em>Making Monsters</em> to the UCLA sequence.</p>
+      <p class="card-arrow">Read →</p>
+    </a>
+    <a href="people.html" class="page-card">
+      <span class="card-num">03 / 03</span>
+      <h3 class="card-title">The People</h3>
+      <p class="card-desc">Behind the headlines: who was actually at the encampment, what they were asking for, and what the monster narrative erased about them.</p>
+      <p class="card-arrow">Read →</p>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p>Making Monsters — UCLA 2024 &nbsp;|&nbsp; UnEssay Project</p>
+  <p>Humanities — De Anza College &nbsp;|&nbsp; Spring 2025</p>
+</footer>
+
+</body>
+</html>

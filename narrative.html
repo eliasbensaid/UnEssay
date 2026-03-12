@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Narrative — Making Monsters</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #0e0e0e;
+      --paper: #f5f0e8;
+      --red: #c0392b;
+      --muted: #7a7265;
+      --rule: #d4cec4;
+      --dark: #111111;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--dark);
+      color: #e8e2d8;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: var(--dark);
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: #666; text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #666; text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: #e8e2d8; }
+
+    /* HERO */
+    .page-hero {
+      padding: 10rem 5rem 5rem;
+      border-bottom: 1px solid #2a2a2a;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: end;
+    }
+    .page-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 1.5rem;
+    }
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 900; line-height: 1.0;
+      letter-spacing: -0.02em;
+    }
+    .page-intro {
+      font-size: 1rem; line-height: 1.8;
+      color: #aaa6a0;
+      align-self: end;
+    }
+
+    /* WORD FREQ */
+    .word-freq {
+      padding: 4rem 5rem;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .section-label {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: #555; margin-bottom: 2.5rem;
+    }
+    .freq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+    .freq-col h3 {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .freq-col.threat h3 { color: var(--red); }
+    .freq-col.human h3 { color: #6a9a6a; }
+
+    .freq-item {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .freq-word {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; font-size: 1.1rem;
+      min-width: 140px; color: #e8e2d8;
+    }
+    .freq-bar-wrap { flex: 1; height: 3px; background: #2a2a2a; }
+    .freq-bar { height: 100%; transition: width 1s ease; }
+    .threat .freq-bar { background: var(--red); }
+    .human .freq-bar { background: #6a9a6a; }
+    .freq-count {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      color: #555; min-width: 40px; text-align: right;
+    }
+
+    /* TIMELINE */
+    .timeline-section {
+      padding: 5rem 5rem;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 3rem;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 1px; background: #2a2a2a;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 4rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      animation: slideIn 0.6s ease forwards;
+    }
+    .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+    .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+    .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+    .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+    .timeline-item:nth-child(5) { animation-delay: 0.5s; }
+    .timeline-item:nth-child(6) { animation-delay: 0.6s; }
+    .timeline-item:nth-child(7) { animation-delay: 0.7s; }
+
+    @keyframes slideIn {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .timeline-dot {
+      position: absolute; left: -3.4rem; top: 0.3rem;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #2a2a2a; border: 1px solid #444;
+    }
+    .timeline-dot.red { background: var(--red); border-color: var(--red); }
+
+    .timeline-date {
+      font-family: 'DM Mono', monospace; font-size: 0.62rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: #555; margin-bottom: 0.5rem;
+    }
+
+    .timeline-source {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.1em; color: var(--red);
+      margin-bottom: 0.75rem; text-transform: uppercase;
+    }
+
+    .timeline-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-style: italic;
+      line-height: 1.5; color: #e8e2d8;
+      margin-bottom: 0.75rem;
+    }
+
+    .timeline-context {
+      font-size: 0.88rem; line-height: 1.7;
+      color: #888; max-width: 680px;
+    }
+
+    .timeline-word {
+      display: inline-block;
+      background: rgba(192, 57, 43, 0.15);
+      border: 1px solid rgba(192, 57, 43, 0.3);
+      color: #e87a6e;
+      padding: 0.1em 0.4em;
+      border-radius: 2px;
+      font-style: normal;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75em;
+      letter-spacing: 0.05em;
+    }
+
+    /* CLOSING */
+    .closing {
+      padding: 5rem;
+      border-top: 1px solid #2a2a2a;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+    .closing-q {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-style: italic; line-height: 1.4;
+    }
+    .closing-nav {
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .next-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 2rem;
+      border: 1px solid #2a2a2a;
+      text-decoration: none; color: #e8e2d8;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .next-link:hover { border-color: var(--red); background: rgba(192,57,43,0.05); }
+    .next-link-label {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase; color: #555;
+    }
+    .next-link-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; margin-top: 0.3rem;
+    }
+    .next-link-arrow { color: var(--red); font-size: 1.2rem; }
+
+    footer {
+      border-top: 1px solid #2a2a2a; padding: 2rem 5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    footer p {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.12em; color: #444; text-transform: uppercase;
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .page-hero { grid-template-columns: 1fr; padding: 7rem 2rem 3rem; gap: 2rem; }
+      .word-freq { padding: 3rem 2rem; }
+      .freq-grid { grid-template-columns: 1fr; }
+      .timeline-section { padding: 3rem 2rem 3rem 4rem; }
+      .closing { grid-template-columns: 1fr; padding: 3rem 2rem; gap: 3rem; }
+      footer { flex-direction: column; gap: 0.5rem; padding: 1.5rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Making Monsters — UCLA 2024</a>
+  <ul class="nav-links">
+    <li><a href="narrative.html" class="active">The Narrative</a></li>
+    <li><a href="machine.html">The Machine</a></li>
+    <li><a href="people.html">The People</a></li>
+  </ul>
+</nav>
+
+<section class="page-hero">
+  <div>
+    <p class="page-eyebrow">01 / 03</p>
+    <h1 class="page-title">The Narrative</h1>
+  </div>
+  <p class="page-intro">
+    A chronological record of the language used to describe UCLA protesters from April 25 to May 2, 2024. This is not commentary — it is documentation. The words speak for themselves.
+  </p>
+</section>
+
+<section class="word-freq">
+  <p class="section-label">Language Frequency — Spring 2024 Campus Protest Coverage</p>
+  <div class="freq-grid">
+    <div class="freq-col threat">
+      <h3>Threat Language</h3>
+      <div class="freq-item">
+        <span class="freq-word">terrorist</span>
+        <div class="freq-bar-wrap"><div class="freq-bar" style="width:88%"></div></div>
+        <span class="freq-count">high</span>
+      </div>
+      <div class="freq-item">
+        <span class="freq-word">mob</span>
+        <div class="freq-bar-wrap"><div class="freq-bar" style="width:72%"></div></div>
+        <span class="freq-count">high</span>
+      </div>
+      <div class="freq-item">
+        <span class="freq-word">agitator</span>
+        <div class="freq-bar-wrap"><div class="freq-bar" style="width:55%"></div></div>
+        <span class="freq-count">med</span>
+      </div>
+      <div class="freq-item">
+        <span class="freq-word">antisemitic</span>
+        <div class="freq-bar-wrap"><div class="freq-bar" style="width:80%"></div></div>
+        <span class="freq-count">high</span>
+      </div>
+    </div>
+    <div class="freq-col human">
+      <h3>Neutral / Human Language</h3>
+      <div class="freq-item">
+        <span class="freq-word">student</span>
+        <div class="freq-bar-wrap"><div class="freq-bar" style="width:30%"></div></div>
+        <span class="freq-count">low</span>
+      </div>
+      <div class="freq-item">
+        <span class="freq-word">protester</span>
+        <div class="freq-bar-wrap"><div class="freq-bar" style="width:38%"></div></div>
+        <span class="freq-count">low</span>
+      </div>
+      <div class="freq-item">
+        <span class="freq-word">demonstrator</span>
+        <div class="freq-bar-wrap"><div class="freq-bar" style="width:22%"></div></div>
+        <span class="freq-count">low</span>
+      </div>
+      <div class="freq-item">
+        <span class="freq-word">demand</span>
+        <div class="freq-bar-wrap"><div class="freq-bar" style="width:18%"></div></div>
+        <span class="freq-count">low</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="timeline-section">
+  <p class="section-label" style="margin-bottom:3rem;">Timeline — April 25 to May 2, 2024</p>
+
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-dot red"></div>
+      <p class="timeline-date">April 25, 2024</p>
+      <p class="timeline-source">CalMatters</p>
+      <p class="timeline-quote">"Steve Garvey calls pro-Palestinian student protesters <span class='timeline-word'>terrorists</span>"</p>
+      <p class="timeline-context">Before any violence had occurred at any encampment, Senate candidate Steve Garvey applied the federal criminal designation "terrorist" to students exercising First Amendment assembly rights. The label was deployed preemptively — not in response to documented harm, but to categorize a group before they could be understood on their own terms.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot red"></div>
+      <p class="timeline-date">Late April, 2024</p>
+      <p class="timeline-source">Fox News</p>
+      <p class="timeline-quote">Protesters <span class='timeline-word'>"terrorize Americans"</span> — campus described as scene of <span class='timeline-word'>"chaos"</span> and <span class='timeline-word'>"lawlessness"</span></p>
+      <p class="timeline-context">Cable news coverage consistently used the language of terrorism and public disorder to describe encampments that independent documentation showed were, in 97% of cases across the country, entirely nonviolent. The framing established threat before evidence of threat.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <p class="timeline-date">Late April, 2024</p>
+      <p class="timeline-source">Congressional Hearings</p>
+      <p class="timeline-quote">University presidents grilled on failure to stop <span class='timeline-word'>"antisemitic mobs"</span> — protests characterized as institutional failure</p>
+      <p class="timeline-context">According to the Georgetown Bridge Initiative's 2024 Islamophobia report, congressional hearings systematically mischaracterized protesters as antisemitic mobs, erasing the political content of their demands and replacing it with a charge of hatred. Many Jewish students and faculty who participated in the encampments were made invisible by this framing.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <p class="timeline-date">April–May, 2024</p>
+      <p class="timeline-source">NPR / Crisis Consultants</p>
+      <p class="timeline-quote">Colleges hire crisis consultants who warn of <span class='timeline-word'>"violent activity"</span> — protesters framed as institutional threat requiring preparation</p>
+      <p class="timeline-context">NPR reporting on university responses documented crisis management firms advising administrators to treat encampments as security threats. This institutional framing — treating students as risks to be managed rather than constituents to be heard — mirrored the political language being deployed publicly.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot red"></div>
+      <p class="timeline-date">May 1, 2024 — Night</p>
+      <p class="timeline-source">Los Angeles Times</p>
+      <p class="timeline-quote">Counterprotesters attack UCLA encampment for <span class='timeline-word'>two hours</span>. Campus police stand down.</p>
+      <p class="timeline-context">While the language of threat had been applied exclusively to encampment participants, actual violence came from outside. The LA Times documented the two-hour attack and the prolonged absence of police response. The people who had been linguistically constructed as threats were the ones being assaulted while authorities waited.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot red"></div>
+      <p class="timeline-date">May 2, 2024 — Night</p>
+      <p class="timeline-source">Los Angeles Times / UCLA</p>
+      <p class="timeline-quote">Riot police clear Royce Quad. <span class='timeline-word'>200+ students arrested.</span></p>
+      <p class="timeline-context">The night after the attack, law enforcement moved against the encampment. The students who had been attacked received no similar response. Those who had been labeled "terrorists" and "mobs" in weeks of rhetoric were now arrested at scale. The language had prepared an audience to accept this outcome.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <p class="timeline-date">The Closing Question</p>
+      <p class="timeline-source"></p>
+      <p class="timeline-quote" style="color:#888;">97% of campus protests in spring 2024 were nonviolent. The UCLA encampment issued two demands: divestment and a ceasefire call. Where did the monster come from?</p>
+      <p class="timeline-context" style="color:#555;">Data on protest nonviolence from the Armed Conflict Location & Event Data Project (ACLED). See <a href="people.html" style="color:var(--red);">The People →</a> for the full picture.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="closing">
+  <blockquote class="closing-q">
+    "Where did this language come from — and what did it make possible?"
+  </blockquote>
+  <div class="closing-nav">
+    <a href="machine.html" class="next-link">
+      <div>
+        <p class="next-link-label">Next</p>
+        <p class="next-link-title">The Machine</p>
+      </div>
+      <span class="next-link-arrow">→</span>
+    </a>
+    <a href="people.html" class="next-link">
+      <div>
+        <p class="next-link-label">Skip to</p>
+        <p class="next-link-title">The People</p>
+      </div>
+      <span class="next-link-arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p>Making Monsters — UCLA 2024</p>
+  <p>UnEssay Project — De Anza College</p>
+</footer>
+
+</body>
+</html>

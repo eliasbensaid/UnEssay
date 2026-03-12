@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The People — Making Monsters</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #0e0e0e;
+      --paper: #f5f0e8;
+      --warm: #f0ead8;
+      --red: #c0392b;
+      --green: #2d6a4f;
+      --muted: #7a7265;
+      --rule: #d4cec4;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+    }
+    .nav-logo {
+      font-family: 'DM Mono', monospace; font-size: 0.7rem;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+
+    /* HERO — light */
+    .page-hero {
+      padding: 10rem 5rem 5rem;
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: end;
+    }
+    .page-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 1.5rem;
+    }
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 900; line-height: 1.0; letter-spacing: -0.02em;
+    }
+    .page-intro {
+      font-size: 1rem; line-height: 1.8; color: #5a5550; align-self: end;
+    }
+
+    /* STATS */
+    .stats-section {
+      padding: 5rem;
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .stat-block {
+      padding: 3rem;
+      border-right: 1px solid var(--rule);
+    }
+    .stat-block:last-child { border-right: none; }
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem; font-weight: 900; line-height: 1.0;
+      color: var(--green); margin-bottom: 0.75rem;
+    }
+    .stat-label {
+      font-size: 0.92rem; line-height: 1.65; color: #5a5550;
+    }
+    .stat-source {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.1em; color: var(--muted); margin-top: 1rem;
+      text-transform: uppercase;
+    }
+
+    /* WHAT THEY WANTED */
+    .demands-section {
+      padding: 5rem;
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .section-label {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+      position: sticky; top: 5rem;
+    }
+    .demands-list {
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+    .demand-item {
+      padding: 2rem 2.5rem;
+      background: var(--warm);
+      border-left: 3px solid var(--green);
+    }
+    .demand-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem;
+    }
+    .demand-body {
+      font-size: 0.92rem; line-height: 1.75; color: #4a4540;
+    }
+
+    /* VOICES */
+    .voices-section {
+      padding: 5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .voices-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .voice-card {
+      padding: 2.5rem;
+      border: 1px solid var(--rule);
+      background: var(--warm);
+    }
+
+    .voice-role {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--green);
+      margin-bottom: 1.25rem; display: block;
+    }
+
+    .voice-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; font-style: italic; line-height: 1.65;
+      color: var(--ink); margin-bottom: 1rem;
+    }
+
+    .voice-attribution {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.08em; color: var(--muted);
+    }
+
+    /* JEWISH VOICES CALLOUT */
+    .callout {
+      padding: 4rem 5rem;
+      border-bottom: 1px solid var(--rule);
+      background: var(--warm);
+    }
+    .callout-inner {
+      max-width: 760px; margin: 0 auto; text-align: center;
+    }
+    .callout-tag {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--red);
+      margin-bottom: 1.5rem; display: block;
+    }
+    .callout-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+      line-height: 1.45; margin-bottom: 1.5rem;
+    }
+    .callout-body {
+      font-size: 0.95rem; line-height: 1.8; color: #5a5550;
+    }
+
+    /* CLOSING */
+    .closing {
+      padding: 6rem 5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .closing-inner {
+      max-width: 760px;
+    }
+    .closing-q {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 2.5vw, 2.1rem);
+      font-style: italic; line-height: 1.45; margin-bottom: 2rem;
+    }
+    .closing-body {
+      font-size: 1rem; line-height: 1.85; color: #5a5550;
+    }
+    .closing-body strong { color: var(--ink); font-weight: 500; }
+
+    /* SOURCES */
+    .sources {
+      padding: 4rem 5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .sources-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .source-item {
+      padding: 1.25rem 1.5rem;
+      border: 1px solid var(--rule);
+    }
+    .source-num {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.12em; color: var(--red); margin-bottom: 0.4rem;
+    }
+    .source-title {
+      font-size: 0.88rem; line-height: 1.5; color: var(--ink);
+    }
+    .source-pub {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      color: var(--muted); margin-top: 0.4rem; letter-spacing: 0.06em;
+    }
+
+    /* PAGE NAV */
+    .page-nav {
+      padding: 4rem 5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .back-link {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--ink); }
+    .home-link {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 1rem; color: var(--ink); text-decoration: none;
+      border-bottom: 1px solid var(--rule); padding-bottom: 0.2rem;
+      transition: border-color 0.2s;
+    }
+    .home-link:hover { border-color: var(--ink); }
+
+    footer {
+      border-top: 1px solid var(--rule); padding: 2rem 5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    footer p {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase;
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .page-hero { grid-template-columns: 1fr; padding: 7rem 2rem 3rem; gap: 2rem; }
+      .stats-section { grid-template-columns: 1fr; }
+      .stat-block { border-right: none; border-bottom: 1px solid var(--rule); }
+      .demands-section { grid-template-columns: 1fr; padding: 3rem 2rem; gap: 2rem; }
+      .section-label { position: static; }
+      .voices-section { padding: 3rem 2rem; }
+      .voices-grid { grid-template-columns: 1fr; }
+      .callout { padding: 3rem 2rem; }
+      .closing { padding: 4rem 2rem; }
+      .sources { padding: 3rem 2rem; }
+      .sources-grid { grid-template-columns: 1fr; }
+      .page-nav { padding: 3rem 2rem; }
+      footer { flex-direction: column; gap: 0.5rem; padding: 1.5rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Making Monsters — UCLA 2024</a>
+  <ul class="nav-links">
+    <li><a href="narrative.html">The Narrative</a></li>
+    <li><a href="machine.html">The Machine</a></li>
+    <li><a href="people.html" class="active">The People</a></li>
+  </ul>
+</nav>
+
+<section class="page-hero">
+  <div>
+    <p class="page-eyebrow">03 / 03</p>
+    <h1 class="page-title">The People</h1>
+  </div>
+  <p class="page-intro">
+    Behind the language of monsters, there were students. This page is about who was actually at the UCLA encampment, what they were asking for, and what the headlines erased about them.
+  </p>
+</section>
+
+<section class="stats-section">
+  <div class="stat-block">
+    <div class="stat-number">97%</div>
+    <p class="stat-label">of campus protests during spring 2024 were nonviolent — including the UCLA encampment.</p>
+    <p class="stat-source">ACLED — Armed Conflict Location & Event Data Project</p>
+  </div>
+  <div class="stat-block">
+    <div class="stat-number">140+</div>
+    <p class="stat-label">campuses hosted Gaza solidarity encampments. The overwhelming majority ended without incident.</p>
+    <p class="stat-source">Associated Press, May 2024</p>
+  </div>
+  <div class="stat-block">
+    <div class="stat-number">2</div>
+    <p class="stat-label">demands from the UCLA encampment. Not violence. Not hate. Divestment and a ceasefire call.</p>
+    <p class="stat-source">UCLA Students for Justice in Palestine, April 2024</p>
+  </div>
+</section>
+
+<section class="demands-section">
+  <p class="section-label">What They Were<br>Actually Asking For</p>
+  <div class="demands-list">
+    <div class="demand-item">
+      <h3 class="demand-title">1. Divestment</h3>
+      <p class="demand-body">
+        Students asked UCLA to divest its endowment from companies with ties to the Israeli military. This is a standard form of institutional pressure with a long history in American campus activism — the same mechanism used during anti-apartheid campaigns in the 1980s. It is a financial and political ask, not a threat.
+      </p>
+    </div>
+    <div class="demand-item">
+      <h3 class="demand-title">2. A Ceasefire Call</h3>
+      <p class="demand-body">
+        Students asked the university to issue a statement calling for a ceasefire in Gaza. This is a form of institutional speech, not action. Dozens of cities, religious denominations, and academic organizations had issued similar statements. The demand is identical in kind to requests made of universities on other humanitarian crises.
+      </p>
+    </div>
+    <div class="demand-item" style="border-left-color: var(--muted); background: transparent;">
+      <h3 class="demand-title" style="color: var(--muted);">What they did not demand</h3>
+      <p class="demand-body" style="color: var(--muted);">
+        Violence. Harm to individuals. The expulsion of any student or faculty member. The silencing of opposing views. None of these appeared in the encampment's published demands or documented communications.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="voices-section">
+  <p class="section-label">Voices from the Encampment</p>
+  <p style="font-size: 0.82rem; color: var(--muted); margin-top: 0.5rem; font-family: 'DM Mono', monospace; letter-spacing: 0.06em;">Compiled from documented first-person accounts in journalism and advocacy publications</p>
+  <div class="voices-grid">
+    <div class="voice-card">
+      <span class="voice-role">Undergraduate student, UCLA</span>
+      <p class="voice-quote">"We had study sessions, shared meals, teach-ins. People were doing their homework. It looked nothing like what was being described on the news."</p>
+      <p class="voice-attribution">— Quoted in The Daily Bruin, May 2024</p>
+    </div>
+    <div class="voice-card">
+      <span class="voice-role">Jewish student participant, UCLA</span>
+      <p class="voice-quote">"I was there because my Jewish identity demands that I speak out against what is happening. Being called antisemitic for protesting a military campaign — that erasure is its own kind of harm."</p>
+      <p class="voice-attribution">— Quoted in Jewish Currents, May 2024</p>
+    </div>
+    <div class="voice-card">
+      <span class="voice-role">Faculty witness, UCLA</span>
+      <p class="voice-quote">"I walked through the encampment multiple times. There were signs, tents, people talking. The hysteria in the coverage had no relationship to what I saw."</p>
+      <p class="voice-attribution">— UCLA faculty member, quoted in LA Times, May 2024</p>
+    </div>
+    <div class="voice-card">
+      <span class="voice-role">Graduate student, UCLA</span>
+      <p class="voice-quote">"The night of the attack, we called for help for two hours. No one came. But the next night, they came for us. That tells you everything about who was considered a threat."</p>
+      <p class="voice-attribution">— Quoted in The Guardian, May 2024</p>
+    </div>
+  </div>
+</section>
+
+<section class="callout">
+  <div class="callout-inner">
+    <span class="callout-tag">The Erasure Inside the Erasure</span>
+    <h2 class="callout-headline">
+      Jewish students participated in the UCLA encampment in significant numbers. The "antisemitic mob" framing made them disappear twice.
+    </h2>
+    <p class="callout-body">
+      First, they were made invisible by a narrative that defined Jewish identity as incompatible with pro-Palestinian protest. Second, their presence directly contradicted the central charge used to delegitimize the encampment — so they were simply left out of coverage. According to the Georgetown Bridge Initiative's 2024 Islamophobia report, this mischaracterization occurred at the institutional level, including in congressional hearings, not just in media coverage.
+    </p>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="closing-inner">
+    <blockquote class="closing-q">
+      "Does this match what you were told? If not — what does that tell you about the telling?"
+    </blockquote>
+    <p class="closing-body">
+      This is not a political argument about the conflict in Gaza. People hold genuinely different views on that question, and this project does not ask you to resolve it. This is an argument about something more specific: <strong>how language works, and what it makes possible.</strong>
+    </p>
+    <br>
+    <p class="closing-body">
+      The students at the UCLA encampment had names, majors, reasons for being there. They had demands that were legible political speech. They were attacked and received no protection. Then they were arrested and the world largely accepted it. None of that required violence from them — it required only that the right words had already been said about them.
+    </p>
+    <br>
+    <p class="closing-body">
+      David Livingstone Smith wrote that dehumanization is a pattern, not an exception. The next time you see a group described in the language of monsters — <strong>wanton, degenerate, terrifying</strong> — ask what evidence that language is standing in for. Ask what it is making possible. Ask who benefits from you not asking.
+    </p>
+  </div>
+</section>
+
+<section class="sources">
+  <p class="section-label">Sources</p>
+  <div class="sources-grid">
+    <div class="source-item">
+      <p class="source-num">01</p>
+      <p class="source-title">Steve Garvey calls pro-Palestinian student protesters 'terrorists'</p>
+      <p class="source-pub">CalMatters — April 2024</p>
+    </div>
+    <div class="source-item">
+      <p class="source-num">02</p>
+      <p class="source-title">UCLA encampment attack and UCPD response coverage</p>
+      <p class="source-pub">Los Angeles Times — May 2024</p>
+    </div>
+    <div class="source-item">
+      <p class="source-num">03</p>
+      <p class="source-title">Islamophobia in 2024 America — Campus protest mischaracterization</p>
+      <p class="source-pub">Georgetown Bridge Initiative — December 2024</p>
+    </div>
+    <div class="source-item">
+      <p class="source-num">04</p>
+      <p class="source-title">Colleges brace for more antiwar protests</p>
+      <p class="source-pub">NPR — August 2024</p>
+    </div>
+    <div class="source-item">
+      <p class="source-num">05</p>
+      <p class="source-title">Making Monsters</p>
+      <p class="source-pub">David Livingstone Smith — pp. 194, 209</p>
+    </div>
+    <div class="source-item">
+      <p class="source-num">06</p>
+      <p class="source-title">US Crisis Monitor — Spring 2024 campus protest data</p>
+      <p class="source-pub">ACLED / Princeton Bridging Divides Initiative — 2024</p>
+    </div>
+  </div>
+</section>
+
+<div class="page-nav">
+  <a href="machine.html" class="back-link">← The Machine</a>
+  <a href="index.html" class="home-link">Return to the beginning</a>
+</div>
+
+<footer>
+  <p>Making Monsters — UCLA 2024</p>
+  <p>UnEssay Project — De Anza College</p>
+</footer>
+
+</body>
+</html>
